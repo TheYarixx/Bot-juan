@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bot Juan</title>
+  <style>
+    body {
+      background-color: #0b0b0f;
+      color: #e2e2e2;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(90deg, #00ffcc, #00bfff);
+      color: #000;
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    #chat {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .msg {
+      max-width: 70%;
+      padding: 10px 15px;
+      border-radius: 12px;
+      font-size: 15px;
+    }
+
+    .user {
+      background-color: #222;
+      align-self: flex-end;
+    }
+
+    .bot {
+      background-color: #00bfff;
+      color: black;
+      align-self: flex-start;
+    }
+
+    footer {
+      display: flex;
+      padding: 10px;
+      background-color: #111;
+      border-top: 1px solid #333;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    button {
+      background-color: #00bfff;
+      border: none;
+      padding: 10px 15px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 6px;
+      margin-left: 10px;
+    }
+
+    button:hover {
+      background-color: #009fcc;
+    }
+  </style>
+</head>
+<body>
+
+  <header>🤖 Hola, soy <strong>Bot Juan</strong>. Respondo frases, cuento chistes, lanzo datos curiosos y te motivo.</header>
+
+  <main id="chat">
+    <!-- Mensajes aparecerán aquí -->
+  </main>
+
+  <footer>
+    <input type="text" id="input" placeholder="Escríbeme algo..." />
+    <button onclick="send()">Enviar</button>
+  </footer>
+
+  <script>
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('input');
+
+    function addMessage(text, sender) {
+      const msg = document.createElement('div');
+      msg.classList.add('msg', sender);
+      msg.textContent = text;
+      chat.appendChild(msg);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function botResponse(userText) {
+      const text = userText.toLowerCase();
+
+      if (text.includes("hola")) return "¡Hola! ¿En qué puedo ayudarte?";
+      if (text.includes("gracias")) return "¡De nada! 💻";
+      if (text.includes("chiste")) return "¿Por qué el código fue al terapeuta? Porque tenía muchos bugs. 🐞";
+      if (text.includes("curioso")) return "Dato curioso: Python fue nombrado por el grupo de comedia 'Monty Python'.";
+      if (text.includes("motiva")) return "¡Tú puedes lograrlo! Cada línea de código te hace mejor.";
+      if (text.includes("adiós")) return "Hasta luego. ¡Sigue programando como un crack! 👨‍💻";
+
+      return "Hmm... no entendí eso, pero sigo aprendiendo. Prueba con: 'chiste', 'curioso', 'motiva'...";
+    }
+
+    function send() {
+      const userText = input.value.trim();
+      if (!userText) return;
+
+      addMessage(userText, 'user');
+      const response = botResponse(userText);
+      setTimeout(() => addMessage(response, 'bot'), 500);
+
+      input.value = '';
+    }
+
+    input.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") send();
+    });
+  </script>
+
+</body>
+</html>
