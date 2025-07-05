@@ -1,17 +1,22 @@
+window.addEventListener("load", () => {
+  addMessage("bot", "¡Hola! ¿Cómo te llamas?");
+});
 function searchWikipedia(rawQuery) {
   let query = rawQuery
     .toLowerCase()
-    .replace(/[¿?]/g, "") // quita signos de pregunta
-    .replace(/quien fue |quien es |que es |cual es /g, "") // elimina frases comunes
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // quitar acentos
+    .replace(/[¿?]/g, "")
+    .replace(/(quien fue|quien es|que es|cual es|dime sobre|hablame de) /g, "")
     .trim();
 
-  // Corrección manual de errores comunes (puedes agregar más)
   const correcciones = {
     "pabllo escbar": "pablo escobar",
     "pablo escbar": "pablo escobar",
-    "romulo y remo": "Rómulo y Remo",
-    "empresa mas grande de colombia": "Empresa más grande de Colombia",
+    "cleopatra": "Cleopatra",
+    "roma": "Roma",
+    "empresa mas grande de colombia": "Ecopetrol"
   };
+
   if (correcciones[query]) {
     query = correcciones[query];
   }
@@ -29,6 +34,6 @@ function searchWikipedia(rawQuery) {
     })
     .catch((err) => {
       console.error(err);
-      addMessage("bot", "Hubo un error al buscar en Wikipedia.");
+      addMessage("bot", "Ocurrió un error buscando en Wikipedia.");
     });
 }
