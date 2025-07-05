@@ -1,71 +1,23 @@
-const form = document.getElementById("chat-form");
-const input = document.getElementById("user-input");
-const chatBox = document.getElementById("chat-box");
+function searchWikipedia(rawQuery) {
+  let query = rawQuery
+    .toLowerCase()
+    .replace(/[¿?]/g, "") // quita signos de pregunta
+    .replace(/quien fue |quien es |que es |cual es /g, "") // elimina frases comunes
+    .trim();
 
-let userName = null;
-
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const userMessage = input.value.trim();
-  if (userMessage === "") return;
-
-  addMessage("user", userMessage);
-  processInput(userMessage.toLowerCase());
-  input.value = "";
-});
-
-function addMessage(sender, text) {
-  const message = document.createElement("div");
-  message.classList.add("message", sender);
-  message.innerText = (sender === "user" ? "Tú: " : "Bot Juan: ") + text;
-  chatBox.appendChild(message);
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-function processInput(message) {
-  if (!userName) {
-    userName = message.charAt(0).toUpperCase() + message.slice(1);
-    setTimeout(() => {
-      addMessage("bot", `¡Genial, ${userName}! ¿En qué puedo ayudarte?`);
-    }, 500);
-    return;
-  }
-
-  let response = getBotResponse(message);
-  if (response) {
-    setTimeout(() => {
-      addMessage("bot", response);
-    }, 500);
-  } else {
-    searchWikipedia(message);
-  }
-}
-
-function getBotResponse(message) {
-  if (message.includes("hola")) return `¡Hola ${userName}! ¿Listo para programar?`;
-  if (message.includes("chiste")) return "¿Por qué el computador fue al médico? ¡Porque tenía un virus! 🦠";
-  if (message.includes("curiosidad")) return "¿Sabías que el lenguaje Python fue nombrado por el show de comedia Monty Python?";
-  if (message.includes("github")) return "Aquí está mi GitHub: https://github.com/devjuan";
-  if (message.includes("frase") || message.includes("motiva")) return "¡Sigue luchando por tus sueños, devjuan! 💪";
-
-  const knowledge = {
-    "quien fundo roma": "Según la leyenda, Roma fue fundada por Rómulo y Remo.",
-    "que es html": "HTML es el lenguaje de marcado que estructura las páginas web.",
-    "que es css": "CSS es el lenguaje que da estilo a las páginas web.",
-    "que es javascript": "JavaScript es el lenguaje que da interactividad a las páginas web.",
-    "cuando fue la segunda guerra mundial": "La Segunda Guerra Mundial ocurrió de 1939 a 1945.",
-    "quien creo python": "Python fue creado por Guido van Rossum en 1991."
+  // Corrección manual de errores comunes (puedes agregar más)
+  const correcciones = {
+    "pabllo escbar": "pablo escobar",
+    "pablo escbar": "pablo escobar",
+    "romulo y remo": "Rómulo y Remo",
+    "empresa mas grande de colombia": "Empresa más grande de Colombia",
   };
-
-  for (const key in knowledge) {
-    if (message.includes(key)) return knowledge[key];
+  if (correcciones[query]) {
+    query = correcciones[query];
   }
 
-  return null; // No encontró respuesta directa, pasará a buscar en Wikipedia
-}
-
-function searchWikipedia(query) {
   const url = `https://es.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
+
   fetch(url)
     .then((res) => res.json())
     .then((data) => {
